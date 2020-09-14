@@ -1,26 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {
+    RecoilRoot,
+    atom,
+    useRecoilState,
+    useRecoilValue,
+    selector,
+} from "recoil";
 
+const numState = atom({
+    key: "numState", // unique
+    default: 0,
+});
+const Counter = () => {
+    const [number, setNumber] = useRecoilState(numState);
+    return <button onClick={() => setNumber(number + 1)}>+1</button>;
+};
+const Display = () => {
+    const number = useRecoilValue(numState);
+    return <div>{number}</div>;
+};
+const squareState = selector({
+    key: "squareState",
+    get: ({ get }) => {
+        return get(numState) ** 2;
+    },
+});
+
+const Square = () => {
+    const squareNumber = useRecoilValue(squareState);
+    return <div>Square: {squareNumber}</div>;
+};
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <RecoilRoot>
+            <Counter />
+            <Display />
+            <Square />
+        </RecoilRoot>
+    );
 }
 
 export default App;
